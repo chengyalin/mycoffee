@@ -55,9 +55,9 @@ export default {
     return {
       actived: 0,
       tabList: [
-        '取货订单',
+        '购买记录',
         '赠亲友订单',
-        '购买记录'
+        '取货订单'
       ],
       orderList: [],
       showLoading: true,
@@ -76,13 +76,13 @@ export default {
       let orderList = []
       switch (this.actived) {
         case 0:
-          orderList = this.orderList.filter(item => item.is_delivery)
+          orderList = this.orderList
           break
         case 1:
           orderList = this.orderList.filter(item => item.is_received)
           break
         case 2:
-          orderList = this.orderList
+          orderList = this.orderList.filter(item => item.is_delivery)
           break
       }
       orderList.forEach(item => {
@@ -96,11 +96,11 @@ export default {
     prodItemDesc () {
       switch (this.actived) {
         case 0:
-          return '取货成功'
+          return '购买成功'
         case 1:
           return '赠送成功'
         case 2:
-          return '购买成功'
+          return '取货成功'
       }
     }
   },
