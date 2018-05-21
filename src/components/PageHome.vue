@@ -32,8 +32,8 @@
           <div
             class="card-item"
             v-for="item in prodListShow"
-            :key='item.product_id'>
-            <div class="prod-img" @click='() => handleClickProd(item)'>
+            :key='item.product_id' @click='() => handleClickProd(item)'>
+            <div class="prod-img">
               <div class="info hot" v-if='item.is_hot'></div>
               <div class="info" v-if='item.is_discount'></div>
               <img v-if='item.market_small_image' :src="item.market_small_image" alt="">
@@ -52,11 +52,11 @@
                   {{i.title}}
                 </span>
               </div>
-              <div class="prod-price">
+              <div class="prod-price" @click='() => handleClickProd(item)'>
                 <span class='vip-price'>￥{{item.vip_price || item.price}}</span>
                 <span class='price' v-if='item.vip_price'>￥{{item.price}}</span>
               </div>
-              <div class="prod-action">
+              <div class="prod-action" @click='handleProdSelectParent'>
                 <span
                   v-if='item.selectCount > 0'
                   class='icon-minus-circle'
@@ -395,6 +395,9 @@ export default {
       this.currentPord = prod
       this.showProdDetail = true
     },
+    handleProdSelectParent (event) {
+      event.stopPropagation()
+    },
     handleProdSelect (prod, val) {
       const newCount = prod.selectCount + val
       if (newCount < 100 && newCount >= 0) {
@@ -484,7 +487,7 @@ export default {
       this.$router.replace({path: 'lib'})
     },
     //首页赠送者进入可以看到好友领取了礼物后的弹窗消息
-    checkNoticeMsg(){
+    checkNoticeMsg () {
       this.$http.get('/accounts/notice/list/', {
         params: {
           user_id: this.currentUser.id
@@ -734,6 +737,7 @@ export default {
               max-height 0.34rem
               overflow hidden
             .prod-price
+              width 1rem
               position absolute
               bottom 0
               font-size 0.16rem
