@@ -190,7 +190,7 @@ export default {
             signType,
             paySign,
             success: (res) => {
-              this.$store.commit('CLEAR_PRODUCT_LIST')
+              this.$store.commit('CLEAR_PRODUCT_LIST')//清空购物车
               this.$router.replace({ path: 'ordercomplete' })
             }
           })
@@ -219,7 +219,7 @@ export default {
     .label
       color #434343
       font-size 0.14rem
-    .note 
+    .note
       color #C6C6C6
       font-size 0.12rem
       i
@@ -251,7 +251,7 @@ export default {
           font-size 0.12rem
           color #999
         .footer
-          position absolute 
+          position absolute
           bottom 0.1rem
           left 0
           width 100%

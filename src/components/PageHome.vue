@@ -9,66 +9,68 @@
       :auto='true'
       height='180px'
       :show-desc-mask='false' />
-    <div class='ads-bar'>
-      <img src="/static/img/icon_sale@3x.png" alt="">
-      {{preference}}
-    </div>
-    <div class="list-box" :class='{checking: totalSelectCount > 0}'>
-      <div class="sider-nav">
-        <div
-          @click='() => handleNavSelect(i)'
-          class="nav-item"
-          :class="{active: i === activedNav}"
-          v-for='(label,i) in navList'
-          :key='i'>
-          {{label}}
-        </div>
+    <div class="list-container-box">
+      <div class='ads-bar'>
+        <img src="/static/img/icon_sale@3x.png" alt="">
+        {{preference}}
       </div>
-      <div class="content-list">
-        <!-- <div class="label">
-          热销饮品
-        </div> -->
-        <div class="card-list">
+      <div class="list-box" :class='{checking: totalSelectCount > 0}'>
+        <div class="sider-nav">
           <div
-            class="card-item"
-            v-for="item in prodListShow"
-            :key='item.product_id' @click='() => handleClickProd(item)'>
-            <div class="prod-img">
-              <div class="info hot" v-if='item.is_hot'></div>
-              <div class="info" v-if='item.is_discount'></div>
-              <img v-if='item.market_small_image' :src="item.market_small_image" alt="">
-            </div>
-            <div class="prod-info">
-              <div class="prod-title">
-                {{item.title}}
+            @click='() => handleNavSelect(i)'
+            class="nav-item"
+            :class="{active: i === activedNav}"
+            v-for='(label,i) in navList'
+            :key='i'>
+            {{label}}
+          </div>
+        </div>
+        <div class="content-list">
+          <!-- <div class="label">
+            热销饮品
+          </div> -->
+          <div class="card-list">
+            <div
+              class="card-item"
+              v-for="item in prodListShow"
+              :key='item.product_id' @click='() => handleClickProd(item)'>
+              <div class="prod-img">
+                <div class="info hot" v-if='item.is_hot'></div>
+                <div class="info" v-if='item.is_discount'></div>
+                <img v-if='item.market_small_image' :src="item.market_small_image" alt="">
               </div>
-              <div class="prod-desc" v-if="activedNav !== 2">
-                {{item.descp}}
-              </div>
-              <div class="prod-desc flex" v-if="activedNav === 2">
+              <div class="prod-info">
+                <div class="prod-title">
+                  {{item.title}}
+                </div>
+                <div class="prod-desc" v-if="activedNav !== 2">
+                  {{item.descp}}
+                </div>
+                <div class="prod-desc flex" v-if="activedNav === 2">
                 <span
                   v-for='i in item.item_info'
                   :key='i.item_id'>
                   {{i.title}}
                 </span>
-              </div>
-              <div class="prod-price" @click='() => handleClickProd(item)'>
-                <span class='vip-price'>￥{{item.vip_price || item.price}}</span>
-                <span class='price' v-if='item.vip_price'>￥{{item.price}}</span>
-              </div>
-              <div class="prod-action" @click='handleProdSelectParent'>
+                </div>
+                <div class="prod-price" @click='() => handleClickProd(item)'>
+                  <span class='vip-price'>￥{{item.vip_price || item.price}}</span>
+                  <span class='price' v-if='item.vip_price'>￥{{item.price}}</span>
+                </div>
+                <div class="prod-action" @click='handleProdSelectParent'>
                 <span
                   v-if='item.selectCount > 0'
                   class='icon-minus-circle'
                   @click='() => handleProdSelect(item, -1)'
                 />
-                <span class='select-item-count' v-if='item.selectCount'>
+                  <span class='select-item-count' v-if='item.selectCount'>
                   {{item.selectCount}}
                 </span>
-                <i
-                  class='icon-add-solid'
-                  @click='() => handleProdSelect(item, 1)'
-                />
+                  <i
+                    class='icon-add-solid'
+                    @click='() => handleProdSelect(item, 1)'
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -292,6 +294,7 @@ export default {
   created () {
     this.fetchSlideList()
     this.fetchProdList()
+    this.$store.commit('CLEAR_PRODUCT_LIST')
   },
   mounted () {
     // this.fetchCouponList()
@@ -669,7 +672,8 @@ export default {
 .page-home
   .list-box
     display flex
-    height calc(100vh - 2.78rem)
+    /*height calc(100vh - 0.88rem)*/
+    height calc(100vh - 2.68rem)
     &.checking
       height calc(100vh - 2.68rem)
     .sider-nav
@@ -763,8 +767,11 @@ export default {
     padding 0 0.15rem
     line-height 0.38rem
     font-size 0.12rem
+    background-color #fff
     img
       margin-right 0.1rem
       width 0.13rem
       vertical-align middle
+
+
 </style>

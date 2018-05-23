@@ -63,6 +63,8 @@ export default {
   },
   created () {
     this.actived = this.tabList.findIndex(i => i.path === this.$route.path)
+    //第二次次进入界面清空之前加的购物车
+    this.$store.commit('CLEAR_PRODUCT_LIST')
   },
   mounted () {
 

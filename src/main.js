@@ -121,3 +121,7 @@ Vue.wechat.ready(() => {
 Vue.wechat.error((res) => {
   console.log(res)
 })
+
+
+
+
