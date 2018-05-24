@@ -9,20 +9,22 @@
       :auto='true'
       height='180px'
       :show-desc-mask='false' />
-    <div id="list-container-box" ref="MylistContainerBox">
+    <!--<div id="list-container-box" ref="MylistContainerBox">-->
       <div class='ads-bar'>
         <img src="/static/img/icon_sale@3x.png" alt="">
         {{preference}}
       </div>
       <div class="list-box" :class='{checking: totalSelectCount > 0}'>
         <div class="sider-nav">
-          <div
-            @click='() => handleNavSelect(i)'
-            class="nav-item"
-            :class="{active: i === activedNav}"
-            v-for='(label,i) in navList'
-            :key='i'>
-            {{label}}
+          <div class="nav-item-parent">
+            <div
+              @click='() => handleNavSelect(i)'
+              class="nav-item"
+              :class="{active: i === activedNav}"
+              v-for='(label,i) in navList'
+              :key='i'>
+              {{label}}
+            </div>
           </div>
         </div>
         <div class="content-list">
@@ -76,7 +78,7 @@
           </div>
         </div>
       </div>
-    </div>
+<!--    </div>-->
     <!--加载弹出框-->
     <div v-transfer-dom>
       <loading :show="showLoading" :text="loadText"></loading>
@@ -298,17 +300,30 @@ export default {
   },
   mounted () {
     //滚动banner隐藏
-      this.$refs.MylistContainerBox.addEventListener('scroll', function () {
-      let top = this.$refs.MylistContainerBox.scrollTop
-      console.log()
-      if (top > 0) {
-        this.$refs.MyvuxSlider.hide()
-        this.$refs.MylistContainerBox.height(window.screen.height)
-      } else {
-        this.$refs.MyvuxSlider.hide()
-        this.$refs.MylistContainerBox.height('180px')
-      }
-    })
+    /*  const menu = document.querySelector('.ads-bar')
+      const menuPosition = menu.getBoundingClientRect().top
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset >= menuPosition) {
+          menu.style.position = 'fixed'
+          menu.style.top = '0px'
+        } else {
+          menu.style.position = 'static'
+          menu.style.top = ''       }
+      })
+  /*    window.onscroll = function () {
+        this.$refs.MylistContainerBox.addEventListener('scroll', function () {
+          let top = this.$refs.MylistContainerBox.scrollTop
+          console.log()
+          if (top > 0) {
+            this.$refs.MyvuxSlider.hide()
+            this.$refs.MylistContainerBox.height(window.screen.height)
+          } else {
+            this.$refs.MyvuxSlider.hide()
+            this.$refs.MylistContainerBox.height('180px')
+          }
+        })
+      }*/
+
     // this.fetchCouponList()
     const userId = this.$route.query.user_id
     const codeId = this.$route.query.code_id
@@ -686,12 +701,15 @@ export default {
   .list-box
     display flex
     /*height calc(100vh - 0.88rem)*/
-    height calc(100vh - 2.68rem)
+    /*height calc(100vh - 2.68rem)*/
     &.checking
       height calc(100vh - 2.68rem)
     .sider-nav
       flex 0 1 0.8rem
       background-color #F3F3F3
+      .nav-item-parent
+        position sticky
+        top 0.4rem
       .nav-item
         font-size 0.13rem
         color #323232
@@ -775,12 +793,15 @@ export default {
               bottom 0px
               align-items center
   .ads-bar
+    position sticky
+    top 0
     height 0.38rem
     color #3C3B40
     padding 0 0.15rem
     line-height 0.38rem
     font-size 0.12rem
     background-color #fff
+    z-index 999
     img
       margin-right 0.1rem
       width 0.13rem
