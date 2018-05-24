@@ -703,7 +703,7 @@ export default {
     /*height calc(100vh - 0.88rem)*/
     /*height calc(100vh - 2.68rem)*/
     &.checking
-      height calc(100vh - 2.68rem)
+      /*height calc(100vh - 2.68rem)*/
     .sider-nav
       flex 0 1 0.8rem
       background-color #F3F3F3
@@ -724,8 +724,8 @@ export default {
     .content-list
       flex 1
       background-color #fff
-      overflow-y auto
-      overflow-x hidden
+      /*overflow-y auto
+      overflow-x hidden*/
       .label
         padding 0.1rem 0.1rem 0 0.1rem
       .card-list
