@@ -1,7 +1,7 @@
 <template>
   <div class='page-home'>
     <!--banner图-->
-    <Swiper
+    <Swiper ref="MyvuxSlider"
       :list='sildeList'
       :show-dots='false'
       :interval='5000'
@@ -9,7 +9,7 @@
       :auto='true'
       height='180px'
       :show-desc-mask='false' />
-    <div class="list-container-box">
+    <div id="list-container-box" ref="MylistContainerBox" v-model = "ScrollTopHide">
       <div class='ads-bar'>
         <img src="/static/img/icon_sale@3x.png" alt="">
         {{preference}}
@@ -288,7 +288,8 @@ export default {
       showFriendGiveMsg: false,
       showFriendGiveObj: null,
       showCouponFirst: false,
-      noticeMsgObj: null
+      noticeMsgObj: null,
+      ScrollTopHide:null
     }
   },
   created () {
@@ -338,8 +339,22 @@ export default {
       if (newV === 0 && this.showDetailSelected) {
         this.showDetailSelected = false
       }
+    },
+    //滚动banner隐藏
+    ScrollTopHide:function () {
+      this.$refs.MylistContainerBox.addEventListener('scroll', function () {
+        let top = this.$refs.MylistContainerBox.scrollTop
+        console.log('MylistContainerBox')
+        if (top > 0) {
+          this.$refs.MyvuxSlider.hide()
+          this.$refs.MylistContainerBox.height(window.screen.height)
+        } else {
+          this.$refs.MyvuxSlider.hide()
+          this.$refs.MylistContainerBox.height('180px')
+        }
+      })
     }
-  },
+},
   computed: {
     hasUserFirst () {
       return this.$store.getters.hasGetFirst
@@ -519,6 +534,7 @@ export default {
       this.$store.commit('SET_USER_FIRST')
     }
   }
+
 }
 </script>
 
