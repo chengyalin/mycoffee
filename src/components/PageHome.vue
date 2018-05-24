@@ -9,7 +9,7 @@
       :auto='true'
       height='180px'
       :show-desc-mask='false' />
-    <div id="list-container-box" ref="MylistContainerBox" v-model = "ScrollTopHide">
+    <div id="list-container-box" ref="MylistContainerBox">
       <div class='ads-bar'>
         <img src="/static/img/icon_sale@3x.png" alt="">
         {{preference}}
@@ -288,8 +288,7 @@ export default {
       showFriendGiveMsg: false,
       showFriendGiveObj: null,
       showCouponFirst: false,
-      noticeMsgObj: null,
-      ScrollTopHide:null
+      noticeMsgObj: null
     }
   },
   created () {
@@ -298,6 +297,18 @@ export default {
     this.$store.commit('CLEAR_PRODUCT_LIST')
   },
   mounted () {
+    //滚动banner隐藏
+      this.$refs.MylistContainerBox.addEventListener('scroll', function () {
+      let top = this.$refs.MylistContainerBox.scrollTop
+      console.log()
+      if (top > 0) {
+        this.$refs.MyvuxSlider.hide()
+        this.$refs.MylistContainerBox.height(window.screen.height)
+      } else {
+        this.$refs.MyvuxSlider.hide()
+        this.$refs.MylistContainerBox.height('180px')
+      }
+    })
     // this.fetchCouponList()
     const userId = this.$route.query.user_id
     const codeId = this.$route.query.code_id
@@ -340,20 +351,6 @@ export default {
         this.showDetailSelected = false
       }
     },
-    //滚动banner隐藏
-    ScrollTopHide:function () {
-      this.$refs.MylistContainerBox.addEventListener('scroll', function () {
-        let top = this.$refs.MylistContainerBox.scrollTop
-        console.log('MylistContainerBox')
-        if (top > 0) {
-          this.$refs.MyvuxSlider.hide()
-          this.$refs.MylistContainerBox.height(window.screen.height)
-        } else {
-          this.$refs.MyvuxSlider.hide()
-          this.$refs.MylistContainerBox.height('180px')
-        }
-      })
-    }
 },
   computed: {
     hasUserFirst () {
