@@ -89,6 +89,10 @@
         </div>
       </x-dialog>
     </div>
+    <!--没有获取到codeid弹出框-->
+    <div v-transfer-dom>
+      <loading :show="showLoading" :text="loadText"></loading>
+    </div>
   </div>
 </template>
 
@@ -120,7 +124,9 @@ export default {
       showModal2: false,
       current2: null,
       showTip1: false,
-      showTip2: false
+      showTip2: false,
+      showLoading: false,
+      loadText: ''
     }
   },
   mounted () {
@@ -148,6 +154,12 @@ export default {
       this.$router.replace({ path: '/' })
     },
     share1 () {
+      const code = this.current1.code
+      if (code === '' || code === null) {
+        this.showLoading = true
+        this.loadText = '商品id未获取到，分享失败'
+        return
+      }
       const title = this.currentUser.nickname +
       '给您赠送了一杯' + this.current1.item_info.title
       const url = BASE_URL + '#/?user_id=' + this.currentUser.id + '&code_id=' +
@@ -167,6 +179,12 @@ export default {
     },
 
     share2 () {
+      const code = this.current2.code
+      if (code === '' || code === null) {
+        this.showLoading = true
+        this.loadText = '商品id未获取到，分享失败'
+        return
+      }
       const title = '众咖，让咖啡触手可及，醇香现磨咖啡了解一下？'
       console.log(title)
       this.showTip2 = true

@@ -85,9 +85,9 @@ export default {
   data () {
     return {
       list: [],
-      shareUser: null,
+      shareUser: true,//默认null
       couponInfo: null,
-      load: false,
+      load: true, //默认false
       over: false,
       showLoading: false,
       loadText: '加载中...'
@@ -164,14 +164,23 @@ export default {
     },
     qiangCoupon (shareUid) {
       const url = '/coupon/couponbank/create/?share_user_id=' + shareUid +
-      '&user_id=' + this.currentUser.id + '&timestamp=' +
-      this.timestamp
+        '&user_id=' + this.currentUser.id + '&timestamp=' +
+        this.timestamp
       this.$http.get(url).then(({data}) => {
+        /* data.ok 为true标识红包为未被拆开状态 */
+        console.log(data)
+        console.log("--------------------")
         if (data.ok) {
+          //  将红包信息赋值进vue的data里
+          //  将判断展示红包是否被拆开的ui的变量置为true
+          /*   view层应当有两段代码，一段是红包未拆开的样子，一段是拆开的样子 通过一个变量的true false 控制   */
           this.couponInfo = data.data.coupon_info
           this.list.push(data.data)
         } else {
+          //  将判断展示红包是否被拆开的ui的变量置为false
           this.over = true
+          this.shareUser = false
+          this.load = false
         }
       })
     }
