@@ -96,13 +96,12 @@ export default {
   },
   mounted () {
     document.title = '抢福袋'
-    const userId = this.$route.query.share_user_id//分享者user_id
+    const userId = this.$route.query.share_user_id
     this.timestamp = this.$route.query.timestamp
-
     console.log('get coupon page', userId, this.timestamp)
     if (userId) {
       this.getShareUser(userId)
-      this.qiangCoupon(shareUid)
+      this.qiangCoupon()
     }
   },
   computed: {
@@ -169,7 +168,6 @@ export default {
       const url = '/coupon/couponbank/create/?share_user_id=' + shareUid +
         '&user_id=' + this.currentUser.id + '&timestamp=' +
         this.timestamp
-      // const url = http://www.zhongkakeji.com/api/coupon/couponbank/create/?share_user_id=9&user_id=27&timestamp=1221134
       this.$http.get(url).then(({data}) => {
         /* data.ok 为true标识红包为未被拆开状态 */
         console.log(data)
@@ -179,7 +177,6 @@ export default {
           //  将判断展示红包是否被拆开的ui的变量置为true
           /*   view层应当有两段代码，一段是红包未拆开的样子，一段是拆开的样子 通过一个变量的true false 控制   */
           this.couponInfo = data.data.coupon_info
-          console.log('coupon_info')
           this.list.push(data.data)
         } else {
           //  将判断展示红包是否被拆开的ui的变量置为false
