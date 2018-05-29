@@ -97,6 +97,7 @@ export default {
   mounted () {
     document.title = '抢福袋'
     const userId = this.$route.query.share_user_id//分享者user_id
+    const shareUid = this.$route.query.user_id//抢券者user_id
     this.timestamp = this.$route.query.timestamp
 
     console.log('get coupon page', userId, this.timestamp)
@@ -166,9 +167,11 @@ export default {
       })
     },
     qiangCoupon (shareUid) {
-      const url = '/coupon/couponbank/create/?share_user_id=' + shareUid +
+      /*const url = '/coupon/couponbank/create/?share_user_id=' + shareUid +
         '&user_id=' + this.currentUser.id + '&timestamp=' +
-        this.timestamp
+        this.timestamp*/
+      const url = '/coupon/couponbank/create/?share_user_id=29' +
+        '&user_id=28' + '&timestamp=1221135'
       // const url = http://www.zhongkakeji.com/api/coupon/couponbank/create/?share_user_id=9&user_id=27&timestamp=1221134
       this.$http.get(url).then(({data}) => {
         /* data.ok 为true标识红包为未被拆开状态 */

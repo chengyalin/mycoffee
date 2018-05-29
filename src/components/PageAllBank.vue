@@ -81,7 +81,7 @@ export default {
       this.showModal = true
       this.showTip = false
     },
-    share () {
+    share (i) {
       this.showTip = true
       const title = this.currentUser.nickname +
       '给您赠送了一杯' + this.current.item_info.title
@@ -95,7 +95,9 @@ export default {
         imgUrl: (BASE_URL + 'static/favicon.ico'),
         link: url,
         success: () => {
-          this.showTip = false
+          //this.showTip = false
+          this.current = false
+          this.bankList.splice(i,1)//分享成功产品列表减1
         }
       })
     },
