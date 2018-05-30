@@ -99,331 +99,329 @@
 </template>
 
 <script>
-import {
-  XDialog,
-  XButton,
-  TransferDomDirective as TransferDom
-} from 'vux'
-import moment from 'moment'
-moment.locale('zh-CN')
-const BASE_URL = 'http://www.zhongkakeji.com/'
-
-export default {
-  name: 'library',
-  directives: {
-    TransferDom
-  },
-  components: {
+  import {
     XDialog,
-    XButton
-  },
-  data () {
-    return {
-      bankList: [],
-      couponList: [],
-      showModal1: false,
-      current1: null,
-      showModal2: false,
-      current2: null,
-      showTip1: false,
-      showTip2: false,
-      showLoading: false,
-      loadText: ''
+    XButton,
+    TransferDomDirective as TransferDom
+  } from 'vux'
+  import moment from 'moment'
+  moment.locale('zh-CN')
+  const BASE_URL = 'http://www.zhongkakeji.com/'
+  export default {
+    name: 'library',
+    directives: {
+      TransferDom
+    },
+    components: {
+      XDialog,
+      XButton
+    },
+    data () {
+      return {
+        bankList: [],
+        couponList: [],
+        showModal1: false,
+        current1: null,
+        showModal2: false,
+        current2: null,
+        showTip1: false,
+        showTip2: false,
+        showLoading: false,
+        loadText: ''
+      }
+    },
+    created () {
+      this.fetchBankList()
+      this.fetchMyCouponList()
+      this.getUpdate()
+    },
+    computed: {
+      currentUser () {
+        return this.$store.getters.userInfo
+      }
+    },
+    methods: {
+      handleBankItemClick (item) {
+        this.current1 = item
+        this.showModal1 = true
+        this.showTip1 = false
+      },
+      handleCouponItemClick (item) {
+        this.current2 = item
+        this.showModal2 = true
+        this.showTip2 = false
+      },
+      navToHome () {
+        this.showModal2 = false
+        this.$router.replace({ path: '/' })
+      },
+      share1 () {
+        const code = this.current1.code
+        if (code === '' || code === null) {
+          this.showLoading = true
+          this.loadText = '商品id未获取到，分享失败'
+          return
+        }
+        const title = this.currentUser.nickname +
+          '给您赠送了一杯' + this.current1.item_info.title
+        const url = BASE_URL + '#/?user_id=' + this.currentUser.id + '&code_id=' +
+          this.current1.code
+        console.log(url)
+        this.showTip1 = true
+        this.$wechat.onMenuShareAppMessage({
+          title,
+          desc: '众咖-让现磨咖啡触手可及',
+          type: 'link',
+          imgUrl: (BASE_URL + 'static/favicon.ico'),
+          link: url,
+          success: () => {
+            this.showTip = false
+          }
+        })
+      },
+      share2 () {
+        const code = this.current2.code
+        if (code === '' || code === null) {
+          this.showLoading = true
+          this.loadText = '商品id未获取到，分享失败'
+          return
+        }
+        const title = '众咖，让咖啡触手可及，醇香现磨咖啡了解一下？'
+        console.log(title)
+        this.showTip2 = true
+        this.$wechat.onMenuShareAppMessage({
+          title,
+          desc: '',
+          type: 'link',
+          imgUrl: (BASE_URL + 'static/favicon.ico'),
+          link: 'http://www.zhongkakeji.com',
+          success: () => {
+            this.showTip2 = false
+          },
+          fail: (res) => {
+            console.log(res)
+          }
+        })
+      },
+      couponValue (obj) {
+        switch (obj.type) {
+          case '1':
+            return obj.discounts + ' 折'
+          case '2':
+            return '￥' + obj.limit
+          case '3':
+            return '￥' + obj.cash
+        }
+      },
+      deadTime (time) {
+        return moment(time).fromNow(true)
+      },
+      fetchBankList () {
+        if (!this.currentUser) {
+          return
+        }
+        this.$http.get('/accounts/bank/list/', {
+          params: {
+            user_id: this.currentUser.id
+          }
+        }).then(({data}) => {
+          if (data.ok) {
+            this.bankList = data.data
+          }
+        })
+      },
+      fetchMyCouponList () {
+        if (!this.currentUser) {
+          return
+        }
+        this.$http.get('/accounts/mycoupon/list/', {
+          params: {
+            user_id: this.currentUser.id
+          }
+        }).then(({data}) => {
+          if (data.ok) {
+            this.couponList = data.data
+          }
+        })
+      },
+      getUpdate () {
+        const url = 'http://www.zhongkakeji.com/accounts/bank/update/?user_id=' + this.currentUser.id + '&code_id=' + this.current.code
+        this.$http.get(url).then(({data}) => {
+          console.log(data)
+          this.fetchBankList()
+        })
+      },
     }
-  },
-  created () {
-    this.fetchMyCouponList()
-    this.getUpdate()
-  },
-  computed: {
-    currentUser () {
-      return this.$store.getters.userInfo
-    }
-  },
-  methods: {
-    handleBankItemClick (item) {
-      this.current1 = item
-      this.showModal1 = true
-      this.showTip1 = false
-    },
-    handleCouponItemClick (item) {
-      this.current2 = item
-      this.showModal2 = true
-      this.showTip2 = false
-    },
-    navToHome () {
-      this.showModal2 = false
-      this.$router.replace({ path: '/' })
-    },
-    share1 () {
-      const code = this.current1.code
-      if (code === '' || code === null) {
-        this.showLoading = true
-        this.loadText = '商品id未获取到，分享失败'
-        return
-      }
-      const title = this.currentUser.nickname +
-      '给您赠送了一杯' + this.current1.item_info.title
-      const url = BASE_URL + '#/?user_id=' + this.currentUser.id + '&code_id=' +
-      this.current1.code
-      console.log(url)
-      this.showTip1 = true
-      this.$wechat.onMenuShareAppMessage({
-        title,
-        desc: '众咖-让现磨咖啡触手可及',
-        type: 'link',
-        imgUrl: (BASE_URL + 'static/favicon.ico'),
-        link: url,
-        success: () => {
-          this.showTip = false
-        }
-      })
-    },
-
-    share2 () {
-      const code = this.current2.code
-      if (code === '' || code === null) {
-        this.showLoading = true
-        this.loadText = '商品id未获取到，分享失败'
-        return
-      }
-      const title = '众咖，让咖啡触手可及，醇香现磨咖啡了解一下？'
-      console.log(title)
-      this.showTip2 = true
-      this.$wechat.onMenuShareAppMessage({
-        title,
-        desc: '',
-        type: 'link',
-        imgUrl: (BASE_URL + 'static/favicon.ico'),
-        link: 'http://www.zhongkakeji.com',
-        success: () => {
-          this.showTip2 = false
-        },
-        fail: (res) => {
-          console.log(res)
-        }
-      })
-    },
-    couponValue (obj) {
-      switch (obj.type) {
-        case '1':
-          return obj.discounts + ' 折'
-        case '2':
-          return '￥' + obj.limit
-        case '3':
-          return '￥' + obj.cash
-      }
-    },
-    deadTime (time) {
-      return moment(time).fromNow(true)
-    },
-    fetchBankList () {
-      if (!this.currentUser) {
-        return
-      }
-      this.$http.get('/accounts/bank/list/', {
-        params: {
-          user_id: this.currentUser.id
-        }
-      }).then(({data}) => {
-        if (data.ok) {
-          this.bankList = data.data
-        }
-      })
-    },
-    fetchMyCouponList () {
-      if (!this.currentUser) {
-        return
-      }
-      this.$http.get('/accounts/mycoupon/list/', {
-        params: {
-          user_id: this.currentUser.id
-        }
-      }).then(({data}) => {
-        if (data.ok) {
-          this.couponList = data.data
-        }
-      })
-    },
-    getUpdate () {
-      const url = 'http://www.zhongkakeji.com/accounts/bank/update/?user_id=' + this.currentUser.id + '&code_id=' + this.current.code
-      this.$http.get(url).then(({data}) => {
-        console.log(data)
-        this.fetchBankList()
-
-      })
-    },
   }
-}
 </script>
 
 <style lang='stylus' scope>
-.info-modal
-  position relative
-  .weui-dialog
-    font-size 0.16rem
-    .bg
-      height 2rem
-      overflow hidden
-      img
-        max-width 100%
-    .share-tips
-      padding 0.1rem
-      box-sizing border-box
-      color white
-      font-size 0.14rem
-      background-color rgba(0,0,0,0.65)
-      border-radius 0.05rem
-      margin-top 0.9rem
-      position absolute
-      width 100%
-      top 0
-      left 0
-      z-index 200
-      p + p
-        margin-top 0.2rem
-    .content
-      text-align center
-      .tip
-        color #999999
-        font-size 0.14rem
-        margin-bottom 0.22rem
-      .title
-        color #434343
-        font-size 0.17rem
-      .t1
-        color #434343
-        font-size 0.14rem
-        text-align left
-        margin-top 0.2rem
-        padding-left 0.35rem
-        .code
-          margin-left 0.2rem
-          color #F5B44C
-          font-size 0.2rem
-  &.ty-1
+  .info-modal
+    position relative
     .weui-dialog
-      background-color white
-    .weui-btn_primary
-      background-color #F5B44C
       font-size 0.16rem
-      padding 2px 0
-      &:active
-        background-color #F5B44C
-  &.ty-2
-    .share-tips
-      margin-top 1.2rem
-    .inner
-      border 2px dotted #F5B44C
-      border-radius 5px
-      .title
-        font-size 0.16rem
-        color #434343
-        padding-top 0.2rem
-      .dead-line
-        color #999999
-        font-size 0.12rem
-    .weui-dialog
-      background-color white
-      padding 0.1rem
       .bg
-        margin-top 0.1rem
-        height auto
-        position relative
-        .b1
-          width 0.8rem
-          position absolute
-          bottom 5px
-          z-index 50
-        .b2
-          margin-left 0.5rem
-          width 1.2rem
-    .weui-btn_primary
-      background-color #F5B44C
-      font-size 0.16rem
-      padding 2px 0
-      &:active
-        background-color #F5B44C
-  .btn
-    margin 0.2rem auto
-    width 2rem
-.page-library
-  .header
-    display flex
-    justify-content space-between
-    padding 0.1rem 0.15rem
-    background-color #F9F9F8
-    align-items center
-    .label
-      color #434343
-      font-size 0.14rem
-    .link
-      color #C6C6C6
-      font-size 0.12rem
-  .bank-list
-    display flex
-    flex-wrap wrap
-    padding 0.15rem 0.2rem 0 0.2rem
-    justify-content space-between
-    height 1.8rem
-    overflow hidden
-    .bank-item
-      flex 0 1 45%
-      text-align center
-      border 1px solid #F0F0F0
-      margin-bottom 0.24rem
-      .img
-        margin 0 auto
-        width 70%
-        height 1rem
+        height 2rem
         overflow hidden
         img
-          display block
-          width 100%
-      .title
-        margin-top 0.05rem
-        color #343434
+          max-width 100%
+      .share-tips
+        padding 0.1rem
+        box-sizing border-box
+        color white
         font-size 0.14rem
-      .desc
-        font-size 0.11rem
-        color #999999
-        margin-top 0.05rem
-  .coupon-list
-    padding 15px
-    height calc(100vh - 3.66rem)
-    overflow auto
-    .coupon-item + .coupon-item
-      padding-top 0.15rem
-    .coupon-item
-      border-bottom 1px solid #F0F0F0
-      padding-bottom 0.15rem
-      display flex
-      .icon
-        font-size 0.16rem
-        flex 0 1 1rem
-        img
-          width 0.8rem
+        background-color rgba(0,0,0,0.65)
+        border-radius 0.05rem
+        margin-top 0.9rem
+        position absolute
+        width 100%
+        top 0
+        left 0
+        z-index 200
+        p + p
+          margin-top 0.2rem
       .content
-        flex 1
-        position relative
+        text-align center
+        .tip
+          color #999999
+          font-size 0.14rem
+          margin-bottom 0.22rem
+        .title
+          color #434343
+          font-size 0.17rem
+        .t1
+          color #434343
+          font-size 0.14rem
+          text-align left
+          margin-top 0.2rem
+          padding-left 0.35rem
+          .code
+            margin-left 0.2rem
+            color #F5B44C
+            font-size 0.2rem
+    &.ty-1
+      .weui-dialog
+        background-color white
+      .weui-btn_primary
+        background-color #F5B44C
         font-size 0.16rem
-        .descp
-          font-size 0.12rem
-          color #999
+        padding 2px 0
+        &:active
+          background-color #F5B44C
+    &.ty-2
+      .share-tips
+        margin-top 1.2rem
+      .inner
+        border 2px dotted #F5B44C
+        border-radius 5px
         .title
           font-size 0.16rem
           color #434343
-        .footer
-          position absolute
-          bottom 0.1rem
-          left 0
-          width 100%
-          display flex
-          justify-content space-between
-          .dead-line
-            color #999999
+          padding-top 0.2rem
+        .dead-line
+          color #999999
+          font-size 0.12rem
+      .weui-dialog
+        background-color white
+        padding 0.1rem
+        .bg
+          margin-top 0.1rem
+          height auto
+          position relative
+          .b1
+            width 0.8rem
+            position absolute
+            bottom 5px
+            z-index 50
+          .b2
+            margin-left 0.5rem
+            width 1.2rem
+      .weui-btn_primary
+        background-color #F5B44C
+        font-size 0.16rem
+        padding 2px 0
+        &:active
+          background-color #F5B44C
+    .btn
+      margin 0.2rem auto
+      width 2rem
+  .page-library
+    .header
+      display flex
+      justify-content space-between
+      padding 0.1rem 0.15rem
+      background-color #F9F9F8
+      align-items center
+      .label
+        color #434343
+        font-size 0.14rem
+      .link
+        color #C6C6C6
+        font-size 0.12rem
+    .bank-list
+      display flex
+      flex-wrap wrap
+      padding 0.15rem 0.2rem 0 0.2rem
+      justify-content space-between
+      height 1.8rem
+      overflow hidden
+      .bank-item
+        flex 0 1 45%
+        text-align center
+        border 1px solid #F0F0F0
+        margin-bottom 0.24rem
+        .img
+          margin 0 auto
+          width 70%
+          height 1rem
+          overflow hidden
+          img
+            display block
+            width 100%
+        .title
+          margin-top 0.05rem
+          color #343434
+          font-size 0.14rem
+        .desc
+          font-size 0.11rem
+          color #999999
+          margin-top 0.05rem
+    .coupon-list
+      padding 15px
+      height calc(100vh - 3.66rem)
+      overflow auto
+      .coupon-item + .coupon-item
+        padding-top 0.15rem
+      .coupon-item
+        border-bottom 1px solid #F0F0F0
+        padding-bottom 0.15rem
+        display flex
+        .icon
+          font-size 0.16rem
+          flex 0 1 1rem
+          img
+            width 0.8rem
+        .content
+          flex 1
+          position relative
+          font-size 0.16rem
+          .descp
             font-size 0.12rem
-          .check-more
-            color #F5B44C
-            font-size 0.13rem
+            color #999
+          .title
+            font-size 0.16rem
+            color #434343
+          .footer
+            position absolute
+            bottom 0.1rem
+            left 0
+            width 100%
+            display flex
+            justify-content space-between
+            .dead-line
+              color #999999
+              font-size 0.12rem
+            .check-more
+              color #F5B44C
+              font-size 0.13rem
 </style>
