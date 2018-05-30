@@ -110,7 +110,7 @@ FastClick.attach(document.body)
 Vue.config.productionTip = false
 
 //微信开发者工具查看
-Vue.wechat.ready(() => {
+/*Vue.wechat.ready(() => {
   console.log('okkk')
   new Vue({
     router,
@@ -120,11 +120,11 @@ Vue.wechat.ready(() => {
 })
 Vue.wechat.error((res) => {
   console.log(res)
-})
+})*/
 
 //谷歌查看
-/*new Vue({
+new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app-box')*/
+}).$mount('#app-box')

@@ -1,5 +1,6 @@
 <template>
   <div class='page-library'>
+    <!--我的咖啡库-->
     <div class='header'>
       <div class='label'>我的咖啡库</div>
       <router-link class='link' to='allbank'>查看全部</router-link>
@@ -17,6 +18,7 @@
         <div class='desc'>单品详情</div>
       </div>
     </div>
+    <!--我的优惠券-->
     <div class='header'>
       <div class='label'>我的优惠券</div>
       <router-link class='link' to='allcoupon'>查看全部</router-link>
@@ -153,7 +155,7 @@ export default {
       this.showModal2 = false
       this.$router.replace({ path: '/' })
     },
-    share1 () {
+    share1 (i) {
       const code = this.current1.code
       if (code === '' || code === null) {
         this.showLoading = true
@@ -173,7 +175,9 @@ export default {
         imgUrl: (BASE_URL + 'static/favicon.ico'),
         link: url,
         success: () => {
-          this.showTip1 = false
+          //this.showTip = false
+          this.current1 = false
+          this.bankList.splice(i,1)//分享成功产品列表减1
         }
       })
     },

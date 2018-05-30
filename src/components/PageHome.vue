@@ -299,31 +299,6 @@ export default {
     this.$store.commit('CLEAR_PRODUCT_LIST')
   },
   mounted () {
-    //滚动banner隐藏
-    /*  const menu = document.querySelector('.ads-bar')
-      const menuPosition = menu.getBoundingClientRect().top
-      window.addEventListener('scroll', function() {
-        if (window.pageYOffset >= menuPosition) {
-          menu.style.position = 'fixed'
-          menu.style.top = '0px'
-        } else {
-          menu.style.position = 'static'
-          menu.style.top = ''       }
-      })
-  /*    window.onscroll = function () {
-        this.$refs.MylistContainerBox.addEventListener('scroll', function () {
-          let top = this.$refs.MylistContainerBox.scrollTop
-          console.log()
-          if (top > 0) {
-            this.$refs.MyvuxSlider.hide()
-            this.$refs.MylistContainerBox.height(window.screen.height)
-          } else {
-            this.$refs.MyvuxSlider.hide()
-            this.$refs.MylistContainerBox.height('180px')
-          }
-        })
-      }*/
-
     // this.fetchCouponList()
     const userId = this.$route.query.user_id
     const codeId = this.$route.query.code_id
@@ -365,7 +340,7 @@ export default {
       if (newV === 0 && this.showDetailSelected) {
         this.showDetailSelected = false
       }
-    },
+    }
 },
   computed: {
     hasUserFirst () {
