@@ -22,7 +22,7 @@ import GetCoupon from './components/PageGetCoupon'
 
 Vue.http.defaults.withCredentials = true;
 //isDev开发模式下为true, 要部署了就改为false
-window.isDev = true
+window.isDev = false
 if (isDev) {
   Vue.http.defaults.baseURL = '/api'
 }

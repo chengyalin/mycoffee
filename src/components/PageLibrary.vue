@@ -1,10 +1,10 @@
 <template>
   <div class='page-library'>
-    <!--我的咖啡库-->
     <div class='header'>
       <div class='label'>我的咖啡库</div>
       <router-link class='link' to='allbank'>查看全部</router-link>
     </div>
+    <!--我的咖啡库-->
     <div class='bank-list'>
       <div
         class='bank-item'
@@ -131,9 +131,9 @@ export default {
       loadText: ''
     }
   },
-  mounted () {
-    this.fetchBankList()
+  created () {
     this.fetchMyCouponList()
+    this.getUpdate()
   },
   computed: {
     currentUser () {
@@ -155,7 +155,7 @@ export default {
       this.showModal2 = false
       this.$router.replace({ path: '/' })
     },
-    share1 (i) {
+    share1 () {
       const code = this.current1.code
       if (code === '' || code === null) {
         this.showLoading = true
@@ -175,9 +175,7 @@ export default {
         imgUrl: (BASE_URL + 'static/favicon.ico'),
         link: url,
         success: () => {
-          //this.showTip = false
-          this.current1 = false
-          this.bankList.splice(i,1)//分享成功产品列表减1
+          this.showTip = false
         }
       })
     },
@@ -246,7 +244,15 @@ export default {
           this.couponList = data.data
         }
       })
-    }
+    },
+    getUpdate () {
+      const url = 'http://www.zhongkakeji.com/accounts/bank/update/?user_id=' + this.currentUser.id + '&code_id=' + this.current.code
+      this.$http.get(url).then(({data}) => {
+        console.log(data)
+        this.fetchBankList()
+
+      })
+    },
   }
 }
 </script>
