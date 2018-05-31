@@ -1,5 +1,6 @@
 <template>
   <div class='page-add-order'>
+  	
     <div class='header'>已选择商品</div>
     <div class='list'>
       <div
@@ -23,6 +24,8 @@
           <i>></i>
         </div>
       </div>
+   		<toast v-model="showToast" type="text" width="160px" position="bottom">{{msg}}</toast>
+      
     </div>
     <CheckListBar
       btnText='支付'
@@ -56,7 +59,7 @@
 </template>
 
 <script>
-import { Group, Cell, Popup, TransferDomDirective as TransferDom } from 'vux'
+import { Group, Cell, Popup,Toast, TransferDomDirective as TransferDom } from 'vux'
 import CheckListBar from './CheckListBar'
 import moment from 'moment'
 
@@ -69,14 +72,17 @@ export default {
     Group,
     Cell,
     Popup,
-    CheckListBar
+    CheckListBar,
+    Toast
   },
   data () {
     return {
       couponId: null,
       couponOff: 0,
       showOptions: false,
-      couponList: []
+      couponList: [],
+      showToast: false,
+      msg:'',
     }
   },
   mounted () {
@@ -116,7 +122,14 @@ export default {
       this.showOptions = false
     },
     handleSelectCoupon () {
-      this.showOptions = true
+    	console.log(this.$route.query.proType)
+      if(this.$route.query.proType === 2){
+      	this.showToast = true;
+      	this.msg = "套餐不能选取优惠券";
+      	return;
+      }
+    	
+      this.showOptions = true;
     },
     calcCouponOff (obj) {
       const price = this.totalPrice
@@ -142,11 +155,12 @@ export default {
         }
       }).then(({data}) => {
         if (data.ok) {
-          this.couponList = data.data
+          this.couponList = data.data;
+          if(this.$route.query.proType === 2)return;
           const orderCoupon = this.couponList.sort((a, b) => {
             return this.calcCouponOff(a.coupon_info) < this.calcCouponOff(b.coupon_info)
           })
-          this.couponId = orderCoupon[0].id
+          this.couponId = orderCoupon[0].id;
           this.couponOff = Math.round(this.calcCouponOff(orderCoupon[0].coupon_info) * 10) / 10
         }
       })

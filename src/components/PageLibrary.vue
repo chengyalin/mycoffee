@@ -156,12 +156,12 @@
         this.$router.replace({ path: '/' })
       },
       share1 () {
-        const code = this.current1.code
+/*        const code = this.current1.code
         if (code === '' || code === null) {
           this.showLoading = true
           this.loadText = '商品id未获取到，分享失败'
           return
-        }
+        }*/
         const title = this.currentUser.nickname +
           '给您赠送了一杯' + this.current1.item_info.title
         const url = BASE_URL + '#/?user_id=' + this.currentUser.id + '&code_id=' +
@@ -180,12 +180,12 @@
         })
       },
       share2 () {
-        const code = this.current2.code
+/*        const code = this.current2.code
         if (code === '' || code === null) {
           this.showLoading = true
           this.loadText = '商品id未获取到，分享失败'
           return
-        }
+        }*/
         const title = '众咖，让咖啡触手可及，醇香现磨咖啡了解一下？'
         console.log(title)
         this.showTip2 = true
@@ -250,7 +250,7 @@
           console.log(data)
           this.fetchBankList()
         })
-      },
+      }
     }
   }
 </script>

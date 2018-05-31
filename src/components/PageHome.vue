@@ -340,7 +340,7 @@ export default {
       if (newV === 0 && this.showDetailSelected) {
         this.showDetailSelected = false
       }
-    }
+    },
 },
   computed: {
     hasUserFirst () {
@@ -379,7 +379,7 @@ export default {
       return moment(time).format('ll')
     },
     handleCheckout () {
-      this.$router.push({ path: 'addorder' })
+      this.$router.push({ path: 'addorder' ,query: { proType: this.activedNav }})
     },
     onCancel () {
       this.showConfirm = false
@@ -394,7 +394,7 @@ export default {
       this.showDetailSelected = !this.showDetailSelected
     },
     handleNavSelect (idx) {
-      this.activedNav = idx
+      this.activedNav = idx;
     },
     handleClickProd (prod) {
       this.currentPord = prod
